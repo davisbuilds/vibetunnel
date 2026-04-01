@@ -13,8 +13,7 @@ on:
       - '.github/workflows/web-ci.yml'
 
 permissions:
-  pull-requests: write
-  issues: write
+  contents: read
 
 defaults:
   run:
@@ -58,7 +57,9 @@ jobs:
 
       - name: Build node-pty for TypeScript
         run: |
-          cd node-pty && npm install && npm run build
+          cd node-pty
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
 
       - name: Run type checking
         run: pnpm run typecheck
@@ -100,7 +101,9 @@ jobs:
 
       - name: Build node-pty
         run: |
-          cd node-pty && npm install && npm run build
+          cd node-pty
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
 
       - name: Build project
         run: pnpm run build

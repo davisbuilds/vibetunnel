@@ -2,25 +2,25 @@
 
 ## Build Process
 - **Never run build commands**
-- the user has `pnpm run dev` running which handles automatic rebuilds, either directly or via the mac app
+- the user has `pnpm dev` running which handles automatic rebuilds, either directly or via the mac app
 - Never manually run the server. The user does that
 - Changes to TypeScript files are automatically compiled and watched
-- Do not run `pnpm run build` or similar build commands
+- Do not run `pnpm build` or similar build commands
 
 ## Development Workflow
 - Make changes to source files in `src/`
 - **ALWAYS run code quality checks before committing:**
-    - `pnpm run check` - Run all checks (format, lint, typecheck) in parallel
+    - `pnpm check` - Run all checks (format, lint, typecheck) in parallel
     - This is the ONLY command you need to run for checking
     - It runs everything concurrently for maximum speed
 - **If there are issues to fix:**
-    - `pnpm run check:fix` - Auto-fix formatting and linting issues (runs sequentially to avoid conflicts)
+    - `pnpm check:fix` - Auto-fix formatting and linting issues (runs sequentially to avoid conflicts)
 - **Individual commands (rarely needed):**
-    - `pnpm run format` / `pnpm run format:check`
-    - `pnpm run lint` / `pnpm run lint:fix`
-    - `pnpm run typecheck`
+    - `pnpm format` / `pnpm format:check`
+    - `pnpm lint` / `pnpm lint:fix`
+    - `pnpm typecheck`
 - Always fix all linting and type checking errors, including in unrelated code
-- Never run the tests, unless explicitly asked to. `pnpm run test`
+- Never run the tests, unless explicitly asked to. `pnpm test`
 
 ## Code References
 **THIS IS OF UTTER IMPORTANCE THE USERS HAPPINESS DEPENDS ON IT!**

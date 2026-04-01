@@ -1,9 +1,9 @@
 # AGENT.md
 
 ## Build/Test Commands
-- **Web**: `cd web && pnpm run check` (format, lint, typecheck), `pnpm run dev` (port 4020), `pnpm run test` (Vitest)
+- **Web**: `cd web && pnpm check` (format, lint, typecheck), `pnpm dev` (port 4020), `pnpm test` (Vitest)
 - **Mac**: `scripts/restart-mac.sh` (rebuild signed Debug + restart), `cd mac && ./scripts/build.sh` (signed Release), `cd mac && ./scripts/lint.sh` (SwiftFormat + SwiftLint)
-- **Single test**: `cd web && pnpm run test path/to/test.spec.ts` or `xcodebuild test -project VibeTunnel-Mac.xcodeproj -scheme VibeTunnel-Mac`
+- **Single test**: `cd web && pnpm test path/to/test.spec.ts` or `xcodebuild test -project VibeTunnel-Mac.xcodeproj -scheme VibeTunnel-Mac`
 
 ## Architecture
 - **Native macOS** (Swift/SwiftUI) in `mac/` - main app + terminal session management

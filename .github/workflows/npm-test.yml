@@ -14,7 +14,6 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
 
 defaults:
   run:
@@ -56,7 +55,9 @@ jobs:
 
       - name: Build node-pty
         run: |
-          cd node-pty && npm install && npm run build
+          cd node-pty
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
 
       - name: Build npm package
         run: pnpm run build:npm -- --current-only

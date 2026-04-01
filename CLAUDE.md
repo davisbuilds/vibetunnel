@@ -50,8 +50,8 @@ xcodebuild -project VibeTunnel-iOS.xcodeproj -scheme VibeTunnel-iOS -sdk iphones
 ```bash
 cd web
 pnpm install                                 # Install dependencies
-pnpm run build                              # Production build
-pnpm run dev                                # Development server with hot reload
+pnpm build                              # Production build
+pnpm dev                                # Development server with hot reload
 ```
 
 ### Code Quality Commands
@@ -59,8 +59,8 @@ pnpm run dev                                # Development server with hot reload
 #### Web (MUST run before committing)
 ```bash
 cd web
-pnpm run check                              # Run all checks in parallel (format, lint, typecheck)
-pnpm run check:fix                          # Auto-fix formatting and linting issues
+pnpm check                              # Run all checks in parallel (format, lint, typecheck)
+pnpm check:fix                          # Auto-fix formatting and linting issues
 ```
 
 #### macOS
@@ -80,10 +80,10 @@ cd ios
 #### Web Tests
 ```bash
 cd web
-pnpm run test                               # Run all tests
-pnpm run test:coverage                      # Run with coverage report (80% required)
-pnpm run test:e2e                          # Run Playwright E2E tests
-pnpm run test:e2e:debug                    # Debug E2E tests
+pnpm test                               # Run all tests
+pnpm test:coverage                      # Run with coverage report (80% required)
+pnpm test:e2e                          # Run Playwright E2E tests
+pnpm test:e2e:debug                    # Debug E2E tests
 ```
 
 #### macOS Tests
@@ -202,7 +202,7 @@ When the user says "release" or asks to create a release, ALWAYS read and follow
      - Simply restarting serves STALE, CACHED version
    - **Development Mode** (recommended for web development):
      - Enable "Use Development Server" in VibeTunnel Settings → Debug
-     - Mac app runs `pnpm run dev` instead of embedded server
+     - Mac app runs `pnpm dev` instead of embedded server
      - Provides hot reload - web changes automatically rebuild without Mac app rebuild
      - Restart VibeTunnel server (not full rebuild) to pick up web changes
      
@@ -246,7 +246,7 @@ When the user reports issues on external devices, use the development server met
 ```bash
 # Run dev server accessible from external devices
 cd web
-pnpm run dev --port 4021 --bind 0.0.0.0
+pnpm dev --port 4021 --bind 0.0.0.0
 ```
 
 Then access from the external device using `http://[mac-ip]:4021`

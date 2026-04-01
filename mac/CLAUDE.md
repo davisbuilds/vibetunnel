@@ -89,7 +89,7 @@ logger.error("❌ Failed to get git status: \(error)")
 - Creating the native executable
 - Embedding everything into the Mac app bundle
 
-**DO NOT manually run `pnpm run build` in the web directory when building the Mac app** - this is redundant and wastes time.
+**DO NOT manually run `pnpm build` in the web directory when building the Mac app** - this is redundant and wastes time.
 
 ### Always Use Subtasks
 **IMPORTANT**: Always use the Task tool for operations, not just when hitting context limits:
@@ -100,8 +100,8 @@ logger.error("❌ Failed to get git status: \(error)")
 
 Examples:
 ```
-# Instead of: pnpm run build
-Task(description="Build web bundle", prompt="Run pnpm run build in the web directory and report if it succeeded or any errors")
+# Instead of: pnpm build
+Task(description="Build web bundle", prompt="Run pnpm build in the web directory and report if it succeeded or any errors")
 
 # Instead of: ./scripts/vtlog.sh -n 100
 Task(description="Check VibeTunnel logs", prompt="Run ./scripts/vtlog.sh -n 100 and summarize any errors or warnings")
@@ -466,7 +466,7 @@ The VibeTunnel server runs on localhost:4020 by default. To test the web interfa
 
 ### Development Workflow
 1. Use XcodeBuildMCP for Swift changes
-2. The web frontend auto-reloads on changes (when `pnpm run dev` is running)
+2. The web frontend auto-reloads on changes (when `pnpm dev` is running)
 3. Use Playwright MCP to test integration between components
 4. Monitor all logs with `vtlog -f` during development
 

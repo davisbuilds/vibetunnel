@@ -25,7 +25,7 @@ jobs:
     
     runs-on: blacksmith-8vcpu-ubuntu-2404-arm
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
       issues: write
       id-token: write
@@ -83,7 +83,7 @@ jobs:
         if: steps.check-permissions.outputs.is_fork != 'true' && steps.check-review.outputs.skip != 'true'
         id: claude-review
         continue-on-error: true
-        uses: anthropics/claude-code-action@beta
+        uses: anthropics/claude-code-action@bee87b3258c251f9279e5371b0cc3660f37f3f77 # v1.0.83
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           
@@ -139,7 +139,6 @@ jobs:
           
           # Enhanced tool access for better analysis
           allowed_tools: |
-            Bash(pnpm install)
             Bash(pnpm run build)
             Bash(pnpm run test)
             Bash(pnpm run test:*)

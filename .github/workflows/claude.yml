@@ -24,9 +24,10 @@ jobs:
       (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude')))
     runs-on: blacksmith-8vcpu-ubuntu-2404-arm
     permissions:
-      contents: write
+      contents: read
       pull-requests: write
       issues: write
+      actions: read
       id-token: write
     steps:
       - name: Checkout repository
@@ -36,7 +37,7 @@ jobs:
 
       - name: Run Claude Code
         id: claude
-        uses: anthropics/claude-code-action@beta
+        uses: anthropics/claude-code-action@bee87b3258c251f9279e5371b0cc3660f37f3f77 # v1.0.83
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           
@@ -50,7 +51,7 @@ jobs:
           # assignee_trigger: "claude-bot"
           
           # Optional: Allow Claude to run specific commands
-          allowed_tools: "Bash(pnpm install),Bash(pnpm run build),Bash(pnpm run test),Bash(pnpm run test:*),Bash(pnpm run lint),Bash(pnpm run lint:*),Bash(pnpm run typecheck),Bash(pnpm run format)"
+          allowed_tools: "Bash(pnpm run build),Bash(pnpm run test),Bash(pnpm run test:*),Bash(pnpm run lint),Bash(pnpm run lint:*),Bash(pnpm run typecheck),Bash(pnpm run format)"
           
           # Optional: Add custom instructions for Claude to customize its behavior for your project
           # custom_instructions: |
@@ -61,4 +62,3 @@ jobs:
           # Optional: Custom environment variables for Claude
           # claude_env: |
           #   NODE_ENV: test
-
