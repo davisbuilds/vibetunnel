@@ -114,13 +114,8 @@ const extractPrebuild = (name, version, targetDir, skipDirCheck = false) => {
 const compileFromSource = (moduleName, moduleDir) => {
   console.log(`  Building ${moduleName} from source...`);
   try {
-    // First check if node-gyp is available
-    try {
-      execSync('node-gyp --version', { stdio: 'pipe' });
-    } catch (e) {
-      console.log('  Installing node-gyp...');
-      execSync('npm install -g node-gyp', { stdio: 'inherit' });
-    }
+    // Fail closed rather than installing additional global tooling during package install.
+    execSync('node-gyp --version', { stdio: 'pipe' });
     
     // For node-pty, node-addon-api is included as a dependency in its package.json
     // npm should handle it automatically during source compilation
@@ -133,6 +128,7 @@ const compileFromSource = (moduleName, moduleDir) => {
     return true;
   } catch (error) {
     console.error(`  Failed to build ${moduleName}:`, error.message);
+    console.error('  Install node-gyp and your platform build tools explicitly, then retry.');
     return false;
   }
 };

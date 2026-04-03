@@ -16,6 +16,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
+const PNPM_VERSION = '10.15.0';
 const NODE_VERSIONS = ['20', '22', '23', '24'];
 const ALL_PLATFORMS = {
   darwin: ['x64', 'arm64'],
@@ -114,24 +115,27 @@ function checkDocker() {
 // Build for macOS locally
 function buildMacOS() {
   console.log('🍎 Building macOS binaries locally...\n');
+  const nodePtyDir = path.join(__dirname, '..', 'node-pty');
   
   // First ensure prebuild is available
   try {
-    execSync('npx prebuild --version', { stdio: 'pipe' });
+    execSync('pnpm exec prebuild --version', {
+      cwd: nodePtyDir,
+      stdio: 'pipe'
+    });
   } catch (e) {
-    console.log('  Installing prebuild dependencies...');
-    execSync('npm install', { stdio: 'inherit' });
+    console.error('❌ prebuild is unavailable. Run "pnpm install --frozen-lockfile" in web/ before building the npm package.');
+    process.exit(1);
   }
   
   // Build node-pty
   console.log('  Building node-pty...');
-  const nodePtyDir = path.join(__dirname, '..', 'node-pty');
   
   for (const nodeVersion of NODE_VERSIONS) {
     for (const arch of PLATFORMS.darwin || []) {
       console.log(`    → node-pty for Node.js ${nodeVersion} ${arch}`);
       try {
-        execSync(`npx prebuild --runtime node --target ${nodeVersion}.0.0 --arch ${arch}`, {
+        execSync(`pnpm exec prebuild --runtime node --target ${nodeVersion}.0.0 --arch ${arch}`, {
           cwd: nodePtyDir,
           stdio: 'pipe'
         });
@@ -223,7 +227,7 @@ function buildMacOS() {
       console.log(`    → authenticate-pam for Node.js ${nodeVersion} ${arch}`);
       try {
         // Use inherit stdio to see any errors during build
-        const result = execSync(`npx prebuild --runtime node --target ${nodeVersion}.0.0 --arch ${arch} --tag-prefix authenticate-pam-v`, {
+        const result = execSync(`pnpm exec prebuild --runtime node --target ${nodeVersion}.0.0 --arch ${arch} --tag-prefix authenticate-pam-v`, {
           cwd: authenticatePamDir,
           stdio: 'pipe',
           env: { ...process.env, npm_config_target_platform: 'darwin', npm_config_target_arch: arch }
@@ -266,12 +270,13 @@ function buildLinux() {
     apt-get update -qq
     apt-get install -y -qq libpam0g-dev:arm64
     
-    # Install pnpm
-    npm install -g pnpm --force --no-frozen-lockfile
-    
+    # Install the pinned pnpm release declared by packageManager
+    corepack enable
+    corepack prepare pnpm@${PNPM_VERSION} --activate
+
     # Install dependencies
     cd /workspace
-    pnpm install --force --no-frozen-lockfile
+    pnpm install --frozen-lockfile
     
     # Build node-pty for Linux
     cd /workspace/node-pty
@@ -288,7 +293,7 @@ function buildLinux() {
           unset CC CXX AR STRIP LINK
         fi
         npm_config_target_platform=linux npm_config_target_arch=\$arch \\
-          npx prebuild --runtime node --target \$node_version.0.0 --arch \$arch || exit 1
+          pnpm exec prebuild --runtime node --target \$node_version.0.0 --arch \$arch || exit 1
       done
     done
     
@@ -307,7 +312,7 @@ function buildLinux() {
           unset CC CXX AR STRIP LINK
         fi
         npm_config_target_platform=linux npm_config_target_arch=\$arch \\
-          npx prebuild --runtime node --target \$node_version.0.0 --arch \$arch --tag-prefix authenticate-pam-v || exit 1
+          pnpm exec prebuild --runtime node --target \$node_version.0.0 --arch \$arch --tag-prefix authenticate-pam-v || exit 1
       done
     done
     

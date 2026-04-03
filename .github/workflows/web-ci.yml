@@ -30,7 +30,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.12.1
+          version: 10.15.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,7 +47,7 @@ jobs:
       - name: Setup Zig
         uses: mlugg/setup-zig@v2
         with:
-          version: latest
+          version: 0.15.2
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -94,7 +94,7 @@ jobs:
       - name: Setup Zig
         uses: mlugg/setup-zig@v2
         with:
-          version: latest
+          version: 0.15.2
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -127,7 +127,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: 10.12.1
+          version: 10.15.0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -144,7 +144,7 @@ jobs:
       - name: Setup Zig
         uses: mlugg/setup-zig@v2
         with:
-          version: latest
+          version: 0.15.2
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -175,17 +175,35 @@ jobs:
           retention-days: 7
 
   npm-build:
-    name: Linux npm build (no pnpm)
+    name: Linux source build
     runs-on: blacksmith-8vcpu-ubuntu-2404-arm
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.15.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: 'pnpm'
+          cache-dependency-path: 'web/pnpm-lock.yaml'
+
       - name: Linux bootstrap (Node + Zig + deps)
         run: scripts/linux-bootstrap.sh
 
-      - name: Install dependencies (npm)
-        run: npm install
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Build project (npm)
-        run: npm run build
+      - name: Build node-pty
+        run: |
+          cd node-pty
+          pnpm install --frozen-lockfile --ignore-scripts
+          pnpm run build
+
+      - name: Build project
+        run: pnpm run build

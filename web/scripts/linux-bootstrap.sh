@@ -25,7 +25,7 @@ ${SUDO} apt-get install -y -qq \
   libpam0g-dev \
   > /dev/null
 
-# Node.js 24.x via NodeSource if missing or too old
+# Node.js 24.x must be preinstalled by the caller
 need_node=1
 if command -v node >/dev/null 2>&1; then
   node_major="$(node -p 'process.versions.node.split(".")[0]')"
@@ -36,12 +36,14 @@ if command -v node >/dev/null 2>&1; then
 fi
 
 if [ "$need_node" -eq 1 ]; then
-  curl -fsSL https://deb.nodesource.com/setup_24.x | ${SUDO} bash - >/dev/null
-  ${SUDO} apt-get install -y -qq nodejs > /dev/null
+  echo "Node.js >= 22.12 is required before running this bootstrap script"
+  echo "Install it with your preferred trusted mechanism (for CI, use actions/setup-node)"
+  exit 1
 fi
 
-# Zig (latest stable) if missing
+# Zig 0.15.2 if missing
 if ! command -v zig >/dev/null 2>&1; then
+  ZIG_VERSION="0.15.2"
   arch="$(uname -m)"
   case "$arch" in
     aarch64|arm64) export ZIG_TARGET="aarch64-linux";;
@@ -49,28 +51,7 @@ if ! command -v zig >/dev/null 2>&1; then
     *) echo "unsupported arch: $arch"; exit 1;;
   esac
 
-  zig_url="$(python3 - <<'PY'
-import json, urllib.request, os, sys
-
-target = os.environ.get('ZIG_TARGET')
-data = json.load(urllib.request.urlopen('https://ziglang.org/download/index.json'))
-versions = [k for k in data.keys() if k and k[0].isdigit()]
-
-def parse(v):
-  try:
-    return tuple(int(x) for x in v.split('.'))
-  except Exception:
-    return (0,)
-
-versions.sort(key=parse, reverse=True)
-for v in versions:
-  entry = data[v]
-  if target in entry:
-    print(entry[target]['tarball'])
-    sys.exit(0)
-print('')
-PY
-)"
+  zig_url="https://ziglang.org/download/${ZIG_VERSION}/zig-${ZIG_TARGET}-${ZIG_VERSION}.tar.xz"
 
   if [ -z "$zig_url" ]; then
     echo "failed to resolve Zig download URL"
@@ -97,5 +78,6 @@ zig version
 
 echo "\nNext steps:"
 echo "  cd web"
-echo "  npm install"
-echo "  npm run build"
+echo "  corepack enable"
+echo "  pnpm install --frozen-lockfile"
+echo "  pnpm run build"
